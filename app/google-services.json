@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "415188626553",
+    "project_id": "woori-dcs-project",
+    "storage_bucket": "woori-dcs-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:415188626553:android:ecef87d9904345ef3d78a8",
+        "android_client_info": {
+          "package_name": "woori.project.newchallenge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "415188626553-bcqep0cfinkloo4ojdjjlmdoqns1q5u4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "woori.project.newchallenge",
+            "certificate_hash": "d749babb41bea55f293b4e807abf4da23a3c8bb4"
+          }
+        },
+        {
+          "client_id": "415188626553-h6dn7t3eokf11qivhego559n4fpfr8qo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7_0iFdTSIAh57pcbIyDuu82LELPkNPNA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "415188626553-h6dn7t3eokf11qivhego559n4fpfr8qo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
