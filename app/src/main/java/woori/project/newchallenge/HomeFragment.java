@@ -79,9 +79,7 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mAdapter_Home = new Adapter_Home();
-
         myrecyclerview = view.findViewById(R.id.recycler_view);
-
         myrecyclerview.setAdapter(mAdapter_Home);
         myrecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
 

@@ -1,5 +1,6 @@
 package woori.project.newchallenge;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,12 @@ import java.util.ArrayList;
 public class Adapter_Home extends RecyclerView.Adapter<Adapter_Home.ViewHolder_Home> {
 
     private ArrayList<ChallengeData> challengelist;
-
+    private Context context;
     @NonNull
     @Override
     public ViewHolder_Home onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext())
+        context = viewGroup.getContext();
+        View view = LayoutInflater.from(context)
                 .inflate(R.layout.item_detail,viewGroup,false);
         return new ViewHolder_Home(view);
     }
@@ -64,6 +66,7 @@ public class Adapter_Home extends RecyclerView.Adapter<Adapter_Home.ViewHolder_H
             explain_textview = (TextView) itemView.findViewById(R.id.detailviewitem_explain_textview);
         }
         void onBind(ChallengeData challengeitem){
+            //Glide.with(context).load(url).into(content_image);
             profile_image.setImageResource(challengeitem.getProfile_image());
             profile_textview.setText(challengeitem.getProfile_textview());
             content_image.setImageResource(challengeitem.getContent_image());
