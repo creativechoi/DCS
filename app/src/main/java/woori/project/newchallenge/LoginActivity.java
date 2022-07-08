@@ -17,12 +17,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -33,6 +36,8 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private int RC_SIGN_IN=123;
 
+    private FirebaseFirestore db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         login=(Button)findViewById(R.id.email_login_button);
         google_login_btn = findViewById(R.id.google_login_button);
 
+        db = FirebaseFirestore.getInstance(); //Init Firestore
         // [START config_signin]
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -77,6 +83,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser!=null){
+            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(intent);
+        }
         //updateUI(currentUser);
     }
     // [END on_start_check_user]
@@ -114,8 +124,23 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            user.getPhotoUrl(); // profile image
+                            user.getDisplayName();
+                            user.getUid(); // 구글 authentication id
                             //updateUI(user);
                             Toast.makeText(getApplicationContext(), "Complete", Toast.LENGTH_LONG).show();
+
+                            Thread addUser = new Thread("add User"){
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                public void run(){
+                                    super.run();
+                                    Log.d("DM","스레스 시작 signin 1");
+                                    addNewUser(new MyUser(user.getDisplayName(), user.getEmail()),user.getUid());
+
+                                    Log.d("DM", "스레드 시작 signin 2");
+                                }
+                            };
+                            addUser.start();
 
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
@@ -130,19 +155,39 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
-    // [END auth_with_google]
 
+    private void addNewUser(final MyUser tmp, String uid){
+        Log.d("DM","사용자 추가 함수 시작");
+
+        db.collection("UserList")
+                .document(uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot documentSnapshot = task.getResult();
+
+                        if(!documentSnapshot.exists()){
+                            documentSnapshot.getReference().set(tmp);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+    // [END auth_with_google]
     // [START signin]
     private void singIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
     // [END signin]
-
     private void signOut(){
         //Firebase sign out
         mAuth.signOut();
-
         //Google sign out
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
                 new OnCompleteListener<Void>() {
@@ -156,7 +201,6 @@ public class LoginActivity extends AppCompatActivity {
     private void revokeAccess() {
         //Firebase sign out
         mAuth.signOut();
-
         // Google revoke access
         mGoogleSignInClient.revokeAccess().addOnCompleteListener(this,
                 new OnCompleteListener<Void>() {

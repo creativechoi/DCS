@@ -1,9 +1,11 @@
 package woori.project.newchallenge;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -53,7 +55,7 @@ public class Adapter_Home extends RecyclerView.Adapter<Adapter_Home.ViewHolder_H
         private ImageView profile_image;
         private TextView profile_textview;
         //private final CardView card_view;
-        private ImageView content_image;
+        private ImageButton content_image;
         private ImageView favorite_imageview;
         private TextView explain_textview;
 
@@ -61,7 +63,14 @@ public class Adapter_Home extends RecyclerView.Adapter<Adapter_Home.ViewHolder_H
             super(itemView);
             profile_image = (ImageView) itemView.findViewById(R.id.detailviewitem_profile_image);
             profile_textview = (TextView)itemView.findViewById(R.id.detailviewitem_profile_textview);
-            content_image = (ImageView) itemView.findViewById(R.id.detailviewitem_imageview_content);
+            content_image = (ImageButton) itemView.findViewById(R.id.detailviewitem_imageview_content);
+            content_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, DetailActivity_miracle.class);
+                    context.startActivity(intent);
+                }
+            });
             favorite_imageview = (ImageView) itemView.findViewById(R.id.detailviewitem_favorite_imageview);
             explain_textview = (TextView) itemView.findViewById(R.id.detailviewitem_explain_textview);
         }
@@ -70,6 +79,7 @@ public class Adapter_Home extends RecyclerView.Adapter<Adapter_Home.ViewHolder_H
             profile_image.setImageResource(challengeitem.getProfile_image());
             profile_textview.setText(challengeitem.getProfile_textview());
             content_image.setImageResource(challengeitem.getContent_image());
+
             favorite_imageview.setImageResource(challengeitem.getFavorite_imageview());
             explain_textview.setText(challengeitem.getExplain_textview());
         }
